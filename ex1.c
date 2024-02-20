@@ -25,24 +25,23 @@ void inserir_mensagem(char *mensagem, int *tamanho) {
 }
 
 void imprimir(char *mensagem, char *chave) {
-  printf("------------- Chave -------------\n");
-  printf("%s\n", chave);
-  printf("------------- Mensagem -------------\n");
-  printf("%s\n", mensagem);
-  printf("----------------------------------\n");
+    printf("------------- Chave -------------\n");
+    printf("%s\n", chave);
+    printf("------------- Mensagem -------------\n");
+    printf("%s\n", mensagem);
+    printf("----------------------------------\n");
 }
 
-int converterParaAscii(char letra){ 
-    return (int)letra; 
+int converterParaAscii(char letra) {
+    return (int)letra;
 }
 
-int converterDeAscii(int numero){ 
-    return (char)numero; 
+int converterDeAscii(int numero) {
+    return (char)numero;
 }
 
 void criptografar(char *chave, char *mensagem_criptografada, int tam_chave, int tam_mensagem) {
-    int i, j, num_tabela;
-    int k = 0;
+    int i, j = 0, num_tabela;
     char letra_chave;
     for (i = 0; i < tam_mensagem; i++) {
         if (j == tam_chave - 1) {
@@ -52,27 +51,25 @@ void criptografar(char *chave, char *mensagem_criptografada, int tam_chave, int 
             num_tabela = converterParaAscii(letra_chave);
             j++;
         }
-        mensagem_criptografada[k] = num_tabela + i;
-        k++;
+        mensagem_criptografada[i] = num_tabela + i;
     }
 }
 
 void descriptografar(char *chave, char *mensagem_descriptografada, int tam_chave, int tam_mensagem) {
-    int i, j, num_tabela;
-    int k = 0;
+    int i, j = 0, num_tabela;
     char letra_chave;
-    for(i = 0; i < tam_mensagem; i++){
+    for (i = 0; i < tam_mensagem; i++) {
         if (j == tam_chave - 1) {
             j = 0;
-        }else{
+        } else {
             letra_chave = chave[j];
             num_tabela = converterParaAscii(letra_chave);
             j++;
         }
-        mensagem_descriptografada[k] = num_tabela - i;
-        k++;
+        mensagem_descriptografada[i] = (num_tabela - i + 256) % 256;  // Ajuste para manter o resultado no intervalo de 0 a 255
     }
 }
+
 
 int main() {
     int tamanho_chave;
@@ -83,11 +80,12 @@ int main() {
     pedir_chave(chave, &tamanho_chave);
     inserir_mensagem(mensagem, &tamanho_mensagem);
 
-    char mensagem_criptografada[tamanho_mensagem];
-    char mensagem_descriptografada[tamanho_mensagem];
+    char mensagem_criptografada[TAMMENSAGEM];
+    char mensagem_descriptografada[TAMMENSAGEM];
 
     criptografar(chave, mensagem_criptografada, tamanho_chave, tamanho_mensagem);
     imprimir(mensagem_criptografada, chave);
+
     descriptografar(chave, mensagem_descriptografada, tamanho_chave, tamanho_mensagem);
     imprimir(mensagem_descriptografada, chave);
 
