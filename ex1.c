@@ -40,34 +40,53 @@ int converterDeAscii(int numero) {
     return (char)numero;
 }
 
-void criptografar(char *chave, char *mensagem_criptografada, int tam_chave, int tam_mensagem) {
-    int i, j = 0, num_tabela;
-    char letra_chave;
-    for (i = 0; i < tam_mensagem; i++) {
-        if (j == tam_chave - 1) {
-            j = 0;
-        } else {
-            letra_chave = chave[j];
-            num_tabela = converterParaAscii(letra_chave);
-            j++;
-        }
-        mensagem_criptografada[i] = num_tabela + i;
+void criaVetorAscii(char *chave, char *mensa, int tam1, int tam2, int *ChAscii, int *menAscii){
+    int i;
+    for ( i = 0; i < tam1; i++){
+        ChAscii[i] = converterParaAscii(chave[i]);
+    }
+    for (i = 0; i < tam2; i++){
+        menAscii[i] = converterParaAscii(mensa[i]);
     }
 }
 
-void descriptografar(char *chave, char *mensagem_descriptografada, int tam_chave, int tam_mensagem) {
-    int i, j = 0, num_tabela;
-    char letra_chave;
-    for (i = 0; i < tam_mensagem; i++) {
-        if (j == tam_chave - 1) {
+void transformaString(int *mensagemAscii, char *mensagemCripto, int tam){
+    int i;
+    for (i = 0; i < tam; i++){
+        mensagemCripto[i] = converterDeAscii(mensagemAscii[i]);
+    }
+}
+
+void criptografar(char *chave, char *mensagem_criptografada, int tam_chave, int tam_mensagem){
+    int i, j = 0;
+    int chaveAscii[tam_chave];
+    int mensagemAscii[tam_mensagem];
+    criaVetorAscii(chave,mensagem_criptografada,tam_chave,tam_mensagem,chaveAscii,mensagemAscii);
+    for (i = 0; i < tam_mensagem; i++){
+        if (j == tam_chave - 1){
             j = 0;
-        } else {
-            letra_chave = chave[j];
-            num_tabela = converterParaAscii(letra_chave);
+        }else{
+            mensagemAscii[i] += chaveAscii[j];
             j++;
         }
-        mensagem_descriptografada[i] = (num_tabela - i + 256) % 256;  // Ajuste para manter o resultado no intervalo de 0 a 255
     }
+    transformaString(mensagemAscii,mensagem_criptografada,tam_mensagem);
+}
+
+void descriptografar(char *chave, char *mensagem_descriptografada, int tam_chave, int tam_mensagem) {
+    int i, j = 0;
+    int chaveAscii[tam_chave];
+    int mensagemAscii[tam_mensagem];
+    criaVetorAscii(chave,mensagem_descriptografada,tam_chave,tam_mensagem,chaveAscii,mensagemAscii);
+    for (i = 0; i < tam_mensagem; i++){
+        if (j == tam_chave - 1){
+            j = 0;
+        }else{
+            mensagemAscii[i] -= chaveAscii[j];
+            j++;
+        }
+    }
+    transformaString(mensagemAscii,mensagem_descriptografada,tam_mensagem);
 }
 
 
