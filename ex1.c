@@ -25,54 +25,70 @@ void inserir_mensagem(char *mensagem, int *tamanho) {
 }
 
 void imprimir(char *mensagem, char *chave) {
-  printf("------------- Chave -------------\n");
-  printf("%s\n", chave);
-  printf("------------- Mensagem -------------\n");
-  printf("%s\n", mensagem);
-  printf("----------------------------------\n");
+    printf("------------- Chave -------------\n");
+    printf("%s\n", chave);
+    printf("------------- Mensagem -------------\n");
+    printf("%s\n", mensagem);
+    printf("----------------------------------\n");
 }
 
-int converterParaAscii(char letra){ 
-    return (int)letra; 
+int converterParaAscii(char letra) {
+    return (int)letra;
 }
 
-int converterDeAscii(int numero){ 
-    return (char)numero; 
+int converterDeAscii(int numero) {
+    return (char)numero;
 }
 
-void criptografar(char *chave, char *mensagem_criptografada, int tam_chave, int tam_mensagem) {
-    int i, j, num_tabela;
-    int k = 0;
-    char letra_chave;
-    for (i = 0; i < tam_mensagem; i++) {
-        if (j == tam_chave - 1) {
-            j = 0;
-        } else {
-            letra_chave = chave[j];
-            num_tabela = converterParaAscii(letra_chave);
-            j++;
-        }
-        mensagem_criptografada[k] = num_tabela + i;
-        k++;
+void criaVetorAscii(char *chave, char *mensa, int tam1, int tam2, int *ChAscii, int *menAscii){
+    int i;
+    for ( i = 0; i < tam1; i++){
+        ChAscii[i] = converterParaAscii(chave[i]);
+    }
+    for (i = 0; i < tam2; i++){
+        menAscii[i] = converterParaAscii(mensa[i]);
     }
 }
 
-void descriptografar(char *chave, char *mensagem_descriptografada, int tam_chave, int tam_mensagem) {
-    int i, j, num_tabela;
-    int k = 0;
-    char letra_chave;
-    for(i = 0; i < tam_mensagem; i++){
-        if (j == tam_chave - 1) {
+void transformaString(int *mensagemAscii, char *mensagemCripto, int tam){
+    int i;
+    for (i = 0; i < tam; i++){
+        mensagemCripto[i] = converterDeAscii(mensagemAscii[i]);
+    }
+}
+
+void criptografar(char *chave, char *mensagem, int tam_chave, int tam_mensagem, char* cripto){
+    int i, j = 0;
+    int chaveAscii[tam_chave];
+    int mensagemAscii[tam_mensagem];
+    criaVetorAscii(chave,mensagem,tam_chave,tam_mensagem,chaveAscii,mensagemAscii);
+    for (i = 0; i < tam_mensagem; i++){
+        if (j == tam_chave){
             j = 0;
         }else{
-            letra_chave = chave[j];
-            num_tabela = converterParaAscii(letra_chave);
+            mensagemAscii[i] += chaveAscii[j];
             j++;
         }
-        mensagem_descriptografada[k] = num_tabela - i;
-        k++;
     }
+    transformaString(mensagemAscii,cripto,tam_mensagem);
 }
+
+void descriptografar(char *chave, char *mensagem, int tam_chave, int tam_mensagem, char *descripto) {
+    int i, j = 0;
+    int chaveAscii[tam_chave];
+    int mensagemAscii[tam_mensagem];
+    criaVetorAscii(chave,mensagem,tam_chave,tam_mensagem,chaveAscii,mensagemAscii);
+    for (i = 0; i < tam_mensagem; i++){
+        if (j == tam_chave){
+            j = 0;
+        }else{
+            mensagemAscii[i] -= chaveAscii[j];
+            j++;
+        }
+    }
+    transformaString(mensagemAscii,descripto,tam_mensagem);
+}
+
 
 int main() {
     int tamanho_chave;
@@ -83,12 +99,13 @@ int main() {
     pedir_chave(chave, &tamanho_chave);
     inserir_mensagem(mensagem, &tamanho_mensagem);
 
-    char mensagem_criptografada[tamanho_mensagem];
-    char mensagem_descriptografada[tamanho_mensagem];
+    char mensagem_criptografada[TAMMENSAGEM];
+    char mensagem_descriptografada[TAMMENSAGEM];
 
-    criptografar(chave, mensagem_criptografada, tamanho_chave, tamanho_mensagem);
+    criptografar(chave, mensagem, tamanho_chave, tamanho_mensagem, mensagem_criptografada);
     imprimir(mensagem_criptografada, chave);
-    descriptografar(chave, mensagem_descriptografada, tamanho_chave, tamanho_mensagem);
+
+    descriptografar(chave, mensagem_criptografada, tamanho_chave, tamanho_mensagem, mensagem_descriptografada);
     imprimir(mensagem_descriptografada, chave);
 
     return 0;
