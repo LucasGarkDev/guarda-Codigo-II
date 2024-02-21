@@ -57,36 +57,36 @@ void transformaString(int *mensagemAscii, char *mensagemCripto, int tam){
     }
 }
 
-void criptografar(char *chave, char *mensagem_criptografada, int tam_chave, int tam_mensagem){
+void criptografar(char *chave, char *mensagem, int tam_chave, int tam_mensagem, char* cripto){
     int i, j = 0;
     int chaveAscii[tam_chave];
     int mensagemAscii[tam_mensagem];
-    criaVetorAscii(chave,mensagem_criptografada,tam_chave,tam_mensagem,chaveAscii,mensagemAscii);
+    criaVetorAscii(chave,mensagem,tam_chave,tam_mensagem,chaveAscii,mensagemAscii);
     for (i = 0; i < tam_mensagem; i++){
-        if (j == tam_chave - 1){
+        if (j == tam_chave){
             j = 0;
         }else{
             mensagemAscii[i] += chaveAscii[j];
             j++;
         }
     }
-    transformaString(mensagemAscii,mensagem_criptografada,tam_mensagem);
+    transformaString(mensagemAscii,cripto,tam_mensagem);
 }
 
-void descriptografar(char *chave, char *mensagem_descriptografada, int tam_chave, int tam_mensagem) {
+void descriptografar(char *chave, char *mensagem, int tam_chave, int tam_mensagem, char *descripto) {
     int i, j = 0;
     int chaveAscii[tam_chave];
     int mensagemAscii[tam_mensagem];
-    criaVetorAscii(chave,mensagem_descriptografada,tam_chave,tam_mensagem,chaveAscii,mensagemAscii);
+    criaVetorAscii(chave,mensagem,tam_chave,tam_mensagem,chaveAscii,mensagemAscii);
     for (i = 0; i < tam_mensagem; i++){
-        if (j == tam_chave - 1){
+        if (j == tam_chave){
             j = 0;
         }else{
             mensagemAscii[i] -= chaveAscii[j];
             j++;
         }
     }
-    transformaString(mensagemAscii,mensagem_descriptografada,tam_mensagem);
+    transformaString(mensagemAscii,descripto,tam_mensagem);
 }
 
 
@@ -102,10 +102,10 @@ int main() {
     char mensagem_criptografada[TAMMENSAGEM];
     char mensagem_descriptografada[TAMMENSAGEM];
 
-    criptografar(chave, mensagem_criptografada, tamanho_chave, tamanho_mensagem);
+    criptografar(chave, mensagem, tamanho_chave, tamanho_mensagem, mensagem_criptografada);
     imprimir(mensagem_criptografada, chave);
 
-    descriptografar(chave, mensagem_descriptografada, tamanho_chave, tamanho_mensagem);
+    descriptografar(chave, mensagem_criptografada, tamanho_chave, tamanho_mensagem, mensagem_descriptografada);
     imprimir(mensagem_descriptografada, chave);
 
     return 0;
